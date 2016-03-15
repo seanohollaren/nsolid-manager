@@ -15,7 +15,7 @@ process.env.NSOLID_HUB = 'localhost:4001';
 process.env.NSOLID_SOCKET = 1111;
 
 // define strings to start up child processes
-let etcdExec = `etcd`
+let etcdExec = `etcd`;
 let etcdArgs =  [`-name`, `nsolid_proxy`, `-listen-client-urls`, `http://0.0.0.0:4001`, `-advertise-client-urls`, `http://0.0.0.0:4001`, `-initial-cluster-state`, `new`];
 let proxyExec = `nsolid nsolid/nsolid-proxy/proxy.js`;
 let consoleExec = `node nsolid/nsolid-console/bin/nsolid-console --interval=1000`
