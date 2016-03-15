@@ -6,7 +6,7 @@ This code is meant to automatically set up and tear down the prerequisites requi
 
 It'll handle:
 - Starting the etcd service registry
-- Starting the N|Solid Proxy service
+- Starting the N|Solid Hub/Proxy service
 - Starting the N|Solid Console server
 - Exporting required environment variables
 - Starting the target app with `nsolid`
@@ -15,9 +15,9 @@ With one command, you'll be ready to navigate to the N|Solid Console and watch h
 
 ## Set up
 
-1. Place the contents of the N|Solid proxy/hub folder inside the `nsolid/proxy` folder.
+1. Place the contents of the N|Solid Hub/Proxy folder (downloaded from the [NodeSource site](https://downloads.nodesource.com/)) inside the `nsolid/proxy` folder.
 
-2. Place the contents of the N|Solid console folder inside the `nsolid/console` folder.
+2. Place the contents of the N|Solid Console folder (downloaded from the [NodeSource site](https://downloads.nodesource.com/)) inside the `nsolid/console` folder.
 
 3. Ensure you have `etcd` installed (and in the system path) as you normally would to run N|Solid.
 
