@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "node_modules/eslint/bin/eslint.js ./ || exit 0"
   },
   "keywords": [
     "nsolid",
