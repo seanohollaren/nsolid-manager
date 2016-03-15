@@ -56,4 +56,6 @@ NSOLID_SOCKET = 1111
 
 1. nsolid-manager should be able to be installed globally as an npm module, so you don't need to be inside the project folder to call it.
 
-2. The manager should offer more optional parameters to override default behavioro such as the port on which to host the N|Solid console.
+2. The manager should offer more optional parameters to override default behavior such as the port on which to host the N|Solid console.
+
+3. The manager should have a better way of handling how it finds the Proxy and Console code.  It should be able to be pointed to their location on the file system or handle pulling down its own copy.
