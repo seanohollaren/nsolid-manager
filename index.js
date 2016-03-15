@@ -30,7 +30,7 @@ console.log(`\n  Launching app: ${appName}`);
 
 // Set appropriate environment variables
 process.env.NSOLID_APPNAME = appName;
-// TODO: Allow these to be overridden by defaults
+// TODO: Allow these to be optionally overridden
 process.env.NSOLID_HUB = 'localhost:4001';
 process.env.NSOLID_SOCKET = 1111;
 
