@@ -1,1 +1,5 @@
 node_modules/
+default.etcd/
+nsolid_proxy.etcd/
+nsolid/nsolid-proxy/*
+nsolid/nsolid-console/*
