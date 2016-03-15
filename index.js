@@ -11,7 +11,7 @@ const appPath = argv.path || argv.p;
 // TODO: Look for missing or malformed args and bail early with an informative error message
 if (argv.help) {
   printHelp();
-  process.exit(1);
+  process.exit(0);
 }
 
 if (!appName) {
