@@ -42,7 +42,7 @@ The path to the target app's node entry point.
 
 ## Default behavior
 
-The manager doesn't offer much customization right now.  It's using the default ports and addresses for the various moving parts of N|Solid.
+The manager doesn't offer much customization right now.  It's using the default ports and addresses for the different components of N|Solid.
 
 Tweak the `.nsolid-proxyrc` file to adjust proxy settings.
 
