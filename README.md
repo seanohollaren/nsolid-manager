@@ -4,6 +4,15 @@
 
 This code is meant to automatically set up and tear down the prerequisites required for an N|Solid server and execute a target app using the `nsolid` executable.
 
+It'll handle:
+- Starting the etcd service registry
+- Starting the N|Solid Proxy service
+- Starting the N|Solid Console server
+- Exporting required environment variables
+- Starting the target app with `nsolid`
+
+With one command, you'll be ready to navigate to the N|Solid Console and watch your app's performance
+
 ## Set up
 
 1. Place the contents of the N|Solid proxy/hub folder inside the `nsolid/proxy` folder.
