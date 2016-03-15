@@ -11,7 +11,7 @@ It'll handle:
 - Exporting required environment variables
 - Starting the target app with `nsolid`
 
-With one command, you'll be ready to navigate to the N|Solid Console and watch your app's performance
+With one command, you'll be ready to navigate to the N|Solid Console and watch your app's performance.
 
 ## Set up
 
