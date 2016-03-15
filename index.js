@@ -9,18 +9,20 @@ const appName = argv.name || argv.n;
 const appPath = argv.path || argv.p;
 
 // TODO: Look for missing or malformed args and bail early with an informative error message
-if(argv.help) {
+if (argv.help) {
   printHelp();
   process.exit(1);
 }
 
 if (!appName) {
-  console.log(`\n  Missing app name.  Specify with the --name flag. \n\n  Exiting... \n`);
+  console.log(`\n  Missing app name.
+                   Specify with the --name flag. \n\n  Exiting... \n`);
   process.exit(1);
 }
 
 if (!appPath) {
-  console.log(`\n  Missing path to the app you want to run with nsolid.  Specify with the --path flag. \n\n  Exiting... \n`);
+  console.log(`\n  Missing path to the app you want to run with nsolid.
+                   Specify with the --path flag. \n\n  Exiting... \n`);
   process.exit(1);
 }
 
@@ -33,23 +35,23 @@ process.env.NSOLID_HUB = 'localhost:4001';
 process.env.NSOLID_SOCKET = 1111;
 
 // Define strings to start up child processes
-let etcdExec = `etcd`;
-let etcdArgs =  [`-name`, `nsolid_proxy`, `-listen-client-urls`, `http://0.0.0.0:4001`, `-advertise-client-urls`, `http://0.0.0.0:4001`, `-initial-cluster-state`, `new`];
+const etcdExec = 'etcd';
+const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
 
 // TODO: Allow the location of the proxy files to be specified?
-let proxyExec = `node`;
-let proxyArgs =  [`nsolid/proxy/proxy.js`];
+const proxyExec = 'node';
+const proxyArgs = ['nsolid/proxy/proxy.js'];
 
 // TODO: Allow the location of the console files to be specified?
-let consoleExec = `node`;
-let consoleArgs =  [`nsolid/console/bin/nsolid-console`, `--interval=1000`];
+const consoleExec = 'node';
+const consoleArgs = ['nsolid/console/bin/nsolid-console', '--interval=1000'];
 
 // Start up target app with nsolid
-let appExec = `nsolid`;
-let appArgs = [appPath];
+const appExec = 'nsolid';
+const appArgs = [appPath];
 
 // Array to hold all child processes
-let children = [];
+const children = [];
 
 // Spawn child processes and add to children array
 children.push(spawn(etcdExec, etcdArgs));
