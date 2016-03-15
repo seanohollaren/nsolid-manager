@@ -20,5 +20,9 @@
   "license": "ISC",
   "dependencies": {
     "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^2.4.0",
+    "eslint-config-airbnb": "^6.1.0"
   }
 }
