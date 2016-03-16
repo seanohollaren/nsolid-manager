@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "node_modules/eslint/bin/eslint.js ./ || exit 0"
+    "eslint": "node_modules/eslint/bin/eslint.js ./src || exit 0",
+    "build": "node_modules/babel-cli/bin/babel.js src -d ./ --presets es2015"
+  },
+  "bin": {
+    "nsolid-manager": "./src/bin/nsolid-manager.js"
   },
   "keywords": [
     "nsolid",
