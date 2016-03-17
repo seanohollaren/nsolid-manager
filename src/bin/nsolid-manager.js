@@ -16,11 +16,7 @@ validateParams(params, argv);
 
 console.log(`\n  Launching app: ${appName}\n`);
 
-// Set appropriate environment variables
-process.env.NSOLID_APPNAME = appName;
-// TODO: Allow these to be optionally overridden
-process.env.NSOLID_HUB = 'localhost:4001';
-process.env.NSOLID_SOCKET = 1111;
+setEnvironmentVars(params);
 
 // Define strings to start up child processes
 const etcdExec = 'etcd';
@@ -28,11 +24,11 @@ const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.
 
 // TODO: Allow the location of the proxy files to be specified?
 const proxyExec = 'node';
-const proxyArgs = [`${__dirname}/../nsolid/proxy/proxy.js`];
+const proxyArgs = ['nsolid/proxy/proxy.js'];
 
 // TODO: Allow the location of the console files to be specified?
 const consoleExec = 'node';
-const consoleArgs = [`${__dirname}/../nsolid/console/bin/nsolid-console`, '--interval=1000'];
+const consoleArgs = ['nsolid/console/bin/nsolid-console', '--interval=1000'];
 
 // Start up target app with nsolid
 const appExec = 'nsolid';
@@ -56,22 +52,30 @@ children.forEach(child => {
 function validateParams(params, argv) {
 
   // TODO: Look for missing or malformed args and bail early with an informative error message
-  if (argv.help) {
+  if (argv.help || !(params.appName || params.appPath)) {
     printHelp();
     process.exit(0);
   }
 
   if (!params.appName) {
-    console.log(`\n  Missing app name.
-                     Specify with the --name flag. \n\n  Exiting... \n`);
+    console.log(`\n  Missing app name.\n\n         Specify with the --name flag. \n\n  Exiting... \n`);
     process.exit(1);
   }
 
   if (!params.appPath) {
-    console.log(`\n  Missing path to the app you want to run with nsolid.
-                     Specify with the --path flag. \n\n  Exiting... \n`);
+    console.log(`\n  Missing path to the app you want to run with nsolid.\n\n         Specify with the --path flag. \n\n  Exiting... \n`);
     process.exit(1);
   }
+
+}
+
+// Set appropriate environment variables
+function setEnvironmentVars(params) {
+
+  // TODO: Allow these to be optionally overridden
+  process.env.NSOLID_APPNAME = params.appName;
+  process.env.NSOLID_HUB = 'localhost:4001';
+  process.env.NSOLID_SOCKET = 1111;
 
 }
 
