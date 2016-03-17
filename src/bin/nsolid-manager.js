@@ -10,21 +10,21 @@ const spawn = require('child_process').spawn;
 const appName = argv.name || argv.n;
 const appPath = argv.path || argv.p;
 
-// TODO: Look for missing or malformed args and bail early with an informative error message
-if (argv.help) {
+// If they requested help or didn't specify any params, print help
+if (argv.help || !(appName || appPath)) {
   printHelp();
   process.exit(0);
 }
 
-if (!appName) {
-  console.log(`\n  Missing app name.
-                   Specify with the --name flag. \n\n  Exiting... \n`);
+// If appName flag was omitted or given without a value
+if (!appName || appName === true) {
+  console.log(`\n  Missing app name.\n\n         Specify with the --name flag. \n\n  Exiting... \n`);
   process.exit(1);
 }
 
-if (!appPath) {
-  console.log(`\n  Missing path to the app you want to run with nsolid.
-                   Specify with the --path flag. \n\n  Exiting... \n`);
+// If appPath flag was omitted or given without a value
+if (!appPath || appPath === true) {
+  console.log(`\n  Missing path to the app you want to run with nsolid.\n\n         Specify with the --path flag. \n\n  Exiting... \n`);
   process.exit(1);
 }
 
