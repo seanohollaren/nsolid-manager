@@ -29,7 +29,7 @@ Once you've placed the console and proxy files in the expected folders, you're r
 Navigate to the nsolid-manager root directory and call an app like this:
 
 ```
-node index --name myApp --path [path to target app]
+./bin/nsolid-manager.js --name myApp --path [path to target app]
 ```
 
 ## Parameters
