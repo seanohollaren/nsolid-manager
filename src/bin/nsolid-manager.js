@@ -7,28 +7,14 @@ const spawn = require('child_process').spawn;
 
 // Grab values from flags
 // TODO: Add more flags to override default values
-const appName = argv.name || argv.n;
-const appPath = argv.path || argv.p;
-
-// TODO: Look for missing or malformed args and bail early with an informative error message
-if (argv.help) {
-  printHelp();
-  process.exit(0);
+const params = {
+  appName: argv.name || argv.n,
+  appPath: argv.path || argv.p
 }
 
-if (!appName) {
-  console.log(`\n  Missing app name.
-                   Specify with the --name flag. \n\n  Exiting... \n`);
-  process.exit(1);
-}
+validateParams(params, argv);
 
-if (!appPath) {
-  console.log(`\n  Missing path to the app you want to run with nsolid.
-                   Specify with the --path flag. \n\n  Exiting... \n`);
-  process.exit(1);
-}
-
-console.log(`\n  Launching app: ${appName}`);
+console.log(`\n  Launching app: ${appName}\n`);
 
 // Set appropriate environment variables
 process.env.NSOLID_APPNAME = appName;
@@ -66,6 +52,28 @@ children.forEach(child => {
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
 });
+
+function validateParams(params, argv) {
+
+  // TODO: Look for missing or malformed args and bail early with an informative error message
+  if (argv.help) {
+    printHelp();
+    process.exit(0);
+  }
+
+  if (!params.appName) {
+    console.log(`\n  Missing app name.
+                     Specify with the --name flag. \n\n  Exiting... \n`);
+    process.exit(1);
+  }
+
+  if (!params.appPath) {
+    console.log(`\n  Missing path to the app you want to run with nsolid.
+                     Specify with the --path flag. \n\n  Exiting... \n`);
+    process.exit(1);
+  }
+
+}
 
 function printHelp() {
   console.log(`\n N|Solid Manager
