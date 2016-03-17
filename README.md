@@ -15,6 +15,8 @@ With one command, you'll be ready to navigate to the N|Solid Console and watch h
 
 ## Set up
 
+> Note: node-manager currently requires Node 4 or higher
+
 1. Place the contents of the N|Solid Hub/Proxy folder (downloaded from the [NodeSource site](https://downloads.nodesource.com/)) inside the `nsolid/proxy` folder.
 
 2. Place the contents of the N|Solid Console folder (downloaded from the [NodeSource site](https://downloads.nodesource.com/)) inside the `nsolid/console` folder.
