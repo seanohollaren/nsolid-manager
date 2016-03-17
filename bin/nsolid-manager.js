@@ -5,6 +5,7 @@
 
 var argv = require('minimist')(process.argv.slice(2));
 var spawn = require('child_process').spawn;
+var path = require('path');
 
 // Grab values from flags
 // TODO: Add more flags to override default values
@@ -25,11 +26,11 @@ var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:
 
 // TODO: Allow the location of the proxy files to be specified?
 var proxyExec = 'node';
-var proxyArgs = ['nsolid/proxy/proxy.js'];
+var proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js')];
 
 // TODO: Allow the location of the console files to be specified?
 var consoleExec = 'node';
-var consoleArgs = ['nsolid/console/bin/nsolid-console', '--interval=1000'];
+var consoleArgs = [path.resolve(__dirname, '../nsolid/console/bin/nsolid-console'), '--interval=1000'];
 
 // Start up target app with nsolid
 var appExec = 'nsolid';
@@ -51,7 +52,6 @@ children.forEach(function (child) {
 });
 
 function validateParams(params, argv) {
-
   // TODO: Look for missing or malformed args and bail early with an informative error message
   if (argv.help || !(params.appName || params.appPath)) {
     printHelp();
@@ -71,7 +71,6 @@ function validateParams(params, argv) {
 
 // Set appropriate environment variables
 function setEnvironmentVars(params) {
-
   // TODO: Allow these to be optionally overridden
   process.env.NSOLID_APPNAME = params.appName;
   process.env.NSOLID_HUB = 'localhost:4001';
