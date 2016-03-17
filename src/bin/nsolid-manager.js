@@ -14,7 +14,7 @@ const params = {
 
 validateParams(params, argv);
 
-console.log(`\n  Launching app: ${appName}\n`);
+console.log(`\n  Launching app: ${params.appName}\n`);
 
 setEnvironmentVars(params);
 
@@ -32,7 +32,7 @@ const consoleArgs = ['nsolid/console/bin/nsolid-console', '--interval=1000'];
 
 // Start up target app with nsolid
 const appExec = 'nsolid';
-const appArgs = [appPath];
+const appArgs = [params.appPath];
 
 // Array to hold all child processes
 const children = [];
