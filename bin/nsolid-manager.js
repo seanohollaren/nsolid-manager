@@ -5,6 +5,7 @@
 
 var argv = require('minimist')(process.argv.slice(2));
 var spawn = require('child_process').spawn;
+var path = require('path');
 
 // Grab values from flags
 // TODO: Add more flags to override default values
@@ -25,11 +26,11 @@ var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:
 
 // TODO: Allow the location of the proxy files to be specified?
 var proxyExec = 'node';
-var proxyArgs = ['nsolid/proxy/proxy.js'];
+var proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js')];
 
 // TODO: Allow the location of the console files to be specified?
 var consoleExec = 'node';
-var consoleArgs = ['nsolid/console/bin/nsolid-console', '--interval=1000'];
+var consoleArgs = [path.resolve(__dirname, '../nsolid/console/bin/nsolid-console'), '--interval=1000'];
 
 // Start up target app with nsolid
 var appExec = 'nsolid';
@@ -50,30 +51,30 @@ children.forEach(function (child) {
   child.stderr.pipe(process.stderr);
 });
 
-function validateParams(params, argv) {
-
+function validateParams(paramsObj, args) {
   // TODO: Look for missing or malformed args and bail early with an informative error message
-  if (argv.help || !(params.appName || params.appPath)) {
+  if (args.help || !(paramsObj.appName || paramsObj.appPath)) {
     printHelp();
     process.exit(0);
   }
 
-  if (!params.appName) {
+  // If appName was missing or blank
+  if (!paramsObj.appName || paramsObj.appName === true) {
     console.log('\n  Missing app name.\n\n         Specify with the --name flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 
-  if (!params.appPath) {
+  // If appPath was missing or blank
+  if (!paramsObj.appPath || paramsObj.appPath === true) {
     console.log('\n  Missing path to the app you want to run with nsolid.\n\n         Specify with the --path flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 }
 
 // Set appropriate environment variables
-function setEnvironmentVars(params) {
-
+function setEnvironmentVars(paramsObj) {
   // TODO: Allow these to be optionally overridden
-  process.env.NSOLID_APPNAME = params.appName;
+  process.env.NSOLID_APPNAME = paramsObj.appName;
   process.env.NSOLID_HUB = 'localhost:4001';
   process.env.NSOLID_SOCKET = 1111;
 }
