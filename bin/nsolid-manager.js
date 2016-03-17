@@ -51,28 +51,28 @@ children.forEach(function (child) {
   child.stderr.pipe(process.stderr);
 });
 
-function validateParams(params, argv) {
+function validateParams(paramsObj, args) {
   // TODO: Look for missing or malformed args and bail early with an informative error message
-  if (argv.help || !(params.appName || params.appPath)) {
+  if (args.help || !(paramsObj.appName || paramsObj.appPath)) {
     printHelp();
     process.exit(0);
   }
 
-  if (!params.appName) {
+  if (!paramsObj.appName) {
     console.log('\n  Missing app name.\n\n         Specify with the --name flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 
-  if (!params.appPath) {
+  if (!paramsObj.appPath) {
     console.log('\n  Missing path to the app you want to run with nsolid.\n\n         Specify with the --path flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 }
 
 // Set appropriate environment variables
-function setEnvironmentVars(params) {
+function setEnvironmentVars(paramsObj) {
   // TODO: Allow these to be optionally overridden
-  process.env.NSOLID_APPNAME = params.appName;
+  process.env.NSOLID_APPNAME = paramsObj.appName;
   process.env.NSOLID_HUB = 'localhost:4001';
   process.env.NSOLID_SOCKET = 1111;
 }
