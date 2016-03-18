@@ -46,7 +46,7 @@ The path to the target app's node entry point.
 
 The manager doesn't offer much customization right now.  It's using the default ports and addresses for the different components of N|Solid.
 
-Tweak the `.nsolid-proxyrc` file to adjust proxy settings.
+Tweak the `.nsolid-proxyrc` file as you normally would to adjust proxy settings.
 
 The manager will automatically set the following environment variables as part of start-up:
 ```
