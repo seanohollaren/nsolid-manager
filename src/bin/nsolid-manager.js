@@ -5,6 +5,7 @@
 const argv = require('minimist')(process.argv.slice(2));
 const spawn = require('child_process').spawn;
 const path = require('path');
+const extend = require('extend');
 
 // Grab values from flags
 // TODO: Add more flags to override default values
@@ -17,23 +18,22 @@ validateParams(params, argv);
 
 console.log(`\n  Launching app: ${params.appName}\n`);
 
-setEnvironmentVars(params);
-
 // Define strings to start up child processes
 const etcdExec = 'etcd';
 const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
 
 // TODO: Allow the location of the proxy files to be specified?
-const proxyExec = 'node';
+const proxyExec = 'nsolid';
 const proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js'), '--config', path.resolve(__dirname, '../nsolid/proxy/.nsolid-proxyrc')];
 
 // TODO: Allow the location of the console files to be specified?
-const consoleExec = 'node';
+const consoleExec = 'nsolid';
 const consoleArgs = [path.resolve(__dirname, '../nsolid/console/bin/nsolid-console'), '--interval=1000'];
 
 // Start up target app with nsolid
 const appExec = 'nsolid';
 const appArgs = [params.appPath];
+const appEnvVars = getEnvironmentVars(params);
 
 // Array to hold all child processes
 const children = [];
@@ -42,7 +42,7 @@ const children = [];
 children.push(spawn(etcdExec, etcdArgs));
 children.push(spawn(proxyExec, proxyArgs));
 children.push(spawn(consoleExec, consoleArgs));
-children.push(spawn(appExec, appArgs));
+children.push(spawn(appExec, appArgs, appEnvVars));
 
 // Pipe output and err through current process
 children.forEach(child => {
@@ -70,12 +70,17 @@ function validateParams(paramsObj, args) {
   }
 }
 
-// Set appropriate environment variables
-function setEnvironmentVars(paramsObj) {
+// Return an object containing appropriate environment variables
+function getEnvironmentVars(paramsObj) {
   // TODO: Allow these to be optionally overridden
-  process.env.NSOLID_APPNAME = paramsObj.appName;
-  process.env.NSOLID_HUB = 'localhost:4001';
-  process.env.NSOLID_SOCKET = 1111;
+  // Pass back existing environment variables with ours added
+  return {
+    env: extend({}, process.env, {
+      NSOLID_APPNAME: paramsObj.appName,
+      NSOLID_HUB: 'localhost:4001',
+      NSOLID_SOCKET: 1111
+    })
+  };
 }
 
 function printHelp() {
