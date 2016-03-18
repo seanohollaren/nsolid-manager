@@ -23,11 +23,11 @@ const etcdExec = 'etcd';
 const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
 
 // TODO: Allow the location of the proxy files to be specified?
-const proxyExec = 'node';
+const proxyExec = 'nsolid';
 const proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js')];
 
 // TODO: Allow the location of the console files to be specified?
-const consoleExec = 'node';
+const consoleExec = 'nsolid';
 const consoleArgs = [path.resolve(__dirname, '../nsolid/console/bin/nsolid-console'), '--interval=1000'];
 
 // Start up target app with nsolid
