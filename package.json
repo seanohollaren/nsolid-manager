@@ -24,6 +24,7 @@
   "author": "Sean O'Hollaren",
   "license": "ISC",
   "dependencies": {
+    "extend": "^3.0.0",
     "minimist": "^1.2.0"
   },
   "devDependencies": {
