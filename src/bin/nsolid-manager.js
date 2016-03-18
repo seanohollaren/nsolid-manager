@@ -24,7 +24,7 @@ const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.
 
 // TODO: Allow the location of the proxy files to be specified?
 const proxyExec = 'nsolid';
-const proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js')];
+const proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js'), '--config', path.resolve(__dirname, '../nsolid/proxy/.nsolid-proxyrc')];
 
 // TODO: Allow the location of the console files to be specified?
 const consoleExec = 'nsolid';

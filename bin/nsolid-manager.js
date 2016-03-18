@@ -24,8 +24,13 @@ var etcdExec = 'etcd';
 var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
 
 // TODO: Allow the location of the proxy files to be specified?
+<<<<<<< HEAD
 var proxyExec = 'nsolid';
 var proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js')];
+=======
+var proxyExec = 'node';
+var proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js'), '--config', path.resolve(__dirname, '../nsolid/proxy/.nsolid-proxyrc')];
+>>>>>>> 29fc741d3b173fc84f14411c8f1eb49feda4b509
 
 // TODO: Allow the location of the console files to be specified?
 var consoleExec = 'nsolid';
