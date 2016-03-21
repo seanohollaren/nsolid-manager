@@ -2,7 +2,7 @@
 
 #### A manager to help wrangle the various moving parts of N|Solid
 
-This code is meant to automatically set up and tear down the prerequisites required for an N|Solid server and execute a target app using the `nsolid` executable.
+Automatically set up and tear down the prerequisites required for an N|Solid server and execute a target app using the `nsolid` executable.
 
 It'll handle:
 - Starting the etcd service registry
