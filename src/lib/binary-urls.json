@@ -1,0 +1,6 @@
+{
+  "nsolid": "https://nsolid-download.nodesource.com/download/nsolid-node/release/",
+  "nsolid-hub": "https://nsolid-download.nodesource.com/download/nsolid-proxy/release/",
+  "nsolid-console": "https://nsolid-download.nodesource.com/download/nsolid-console/release/",
+  "etcd": "https://api.github.com/repos/coreos/etcd/releases"
+}
