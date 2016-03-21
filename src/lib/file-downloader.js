@@ -13,6 +13,7 @@ Emits: progress, error, done
 */
 class FileDownloader extends EventEmitter {
   constructor(opts) {
+    super();
     if (!opts || typeof opts !== 'object') throw new Error('The File Download requires an options object');
     this.opts = opts;
   }
@@ -50,7 +51,9 @@ class FileDownloader extends EventEmitter {
             this.emit('done', this.opts.location);
           }
         });
-        
+
       });
   }
 }
+
+module.exports = FileDownloader;
