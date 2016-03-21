@@ -1,6 +1,7 @@
 'use strict';
 
 const FileDownloader = require('./lib/file-downloader.js');
+const binaryUrls = require('./binary-urls.json');
 const os = require('os');
 
 

@@ -1,6 +1,18 @@
 {
-  "nsolid": "https://nsolid-download.nodesource.com/download/nsolid-node/release/",
-  "nsolid-hub": "https://nsolid-download.nodesource.com/download/nsolid-proxy/release/",
-  "nsolid-console": "https://nsolid-download.nodesource.com/download/nsolid-console/release/",
-  "etcd": "https://api.github.com/repos/coreos/etcd/releases"
+  "nsolid": {
+    "file": "nsolid-${version}-${platform}-x64.tar.gz",
+    "dir": "https://nsolid-download.nodesource.com/download/nsolid-node/release/"
+  },
+  "nsolid-hub": {
+    "file": "nsolid-proxy-${version}.tar.gz",
+    "dir" : "https://nsolid-download.nodesource.com/download/nsolid-proxy/release/"
+  },
+  "nsolid-console": {
+    "file" : "nsolid-console-${version}-${platform}-x64.tar.gz",
+    "meta" : "https://nsolid-download.nodesource.com/download/nsolid-console/release/"
+  },
+  "etcd": {
+    "file": "etcd-${version}-${platform}-amd64${extension}"
+    "meta" : "https://api.github.com/repos/coreos/etcd/releases"
+  }
 }
