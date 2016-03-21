@@ -58,11 +58,11 @@ NSOLID_SOCKET = 1111
 
     Until then, you can create an alias in your shell's rc file to get the desired behavior:
 
-      `alias nman='/path/to/folder/nsolid-manager/bin/nsolid-manager.js'`
+      `alias nsman='/path/to/folder/nsolid-manager/bin/nsolid-manager.js'`
 
     Then run a program anywhere on the file system like this:
 
-      `nman -n testApp -p /path/to/app.js`
+      `nsman -n testApp -p /path/to/app.js`
 
 - The manager should offer more optional parameters to override default behavior such as the port on which to host the N|Solid console.
 
