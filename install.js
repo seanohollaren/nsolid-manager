@@ -180,7 +180,6 @@ function downloadEtcd(metaData) {
       fs.createReadStream(file).pipe(outputStream).on('close', streamCleanup);
 
       function streamCleanup() {
-
         console.log('Inside fs.createReadStream end block.');
         console.log('Platform: ' + platform);
         // if we are on mac we need to move the location of the
@@ -191,6 +190,9 @@ function downloadEtcd(metaData) {
           console.log('To: ' + __dirname + '/dependencies/etcd/');
           ncp(__dirname + '/dependencies/etcd/' + rawfilename, __dirname + '/dependencies/etcd/', function (err) {
             if (err) return reject(err);
+
+            // chmod file
+            fs.chmodSync(__dirname + '/dependencies/etcd/etcd', '0100');
             return resolve();
           });
         } else {

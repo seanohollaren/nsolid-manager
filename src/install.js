@@ -230,6 +230,9 @@ function downloadEtcd(metaData) {
               `${__dirname}/dependencies/etcd/`,
               (err) => {
                 if (err) return reject(err);
+
+                // chmod file
+                fs.chmodSync(`${__dirname}/dependencies/etcd/etcd`, '0100');
                 return resolve();
               });
           }
