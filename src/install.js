@@ -1,5 +1,4 @@
 'use strict';
-require('babel-polyfill');
 
 /* ----------------------------------
 This file will install all necessary dependencies
