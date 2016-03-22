@@ -232,7 +232,7 @@ function downloadEtcd(metaData) {
                 if (err) return reject(err);
 
                 // chmod file
-                fs.chmodSync(`${__dirname}/dependencies/etcd/etcd`, '0100');
+                fs.chmodSync(`${__dirname}/dependencies/etcd/etcd`, '0740');
                 return resolve();
               });
           }
