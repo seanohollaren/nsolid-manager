@@ -18,20 +18,23 @@ validateParams(params, argv);
 
 console.log(`\n  Launching app: ${params.appName}\n`);
 
+const nsolidBinary = path.resolve(__dirname, '../dependencies/nsolid/bin/nsolid');
+const etcd = path.resolve(__dirname, '../dependencies/etcd/etcd');
+
 // Define strings to start up child processes
-const etcdExec = 'etcd';
+const etcdExec = etcd;
 const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
 
 // TODO: Allow the location of the proxy files to be specified?
-const proxyExec = 'nsolid';
+const proxyExec = nsolidBinary;
 const proxyArgs = [path.resolve(__dirname, '../dependencies/proxy/proxy.js'), '--config', path.resolve(__dirname, '../dependencies/proxy/.nsolid-proxyrc')];
 
 // TODO: Allow the location of the console files to be specified?
-const consoleExec = 'nsolid';
+const consoleExec = nsolidBinary;
 const consoleArgs = [path.resolve(__dirname, '../dependencies/console/bin/nsolid-console'), '--interval=1000'];
 
 // Start up target app with nsolid
-const appExec = 'nsolid';
+const appExec = nsolidBinary;
 const appArgs = [params.appPath];
 const appEnvVars = getEnvironmentVars(params);
 
