@@ -25,11 +25,11 @@ var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:
 
 // TODO: Allow the location of the proxy files to be specified?
 var proxyExec = 'nsolid';
-var proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js'), '--config', path.resolve(__dirname, '../nsolid/proxy/.nsolid-proxyrc')];
+var proxyArgs = [path.resolve(__dirname, '../dependencies/proxy/proxy.js'), '--config', path.resolve(__dirname, '../dependencies/proxy/.nsolid-proxyrc')];
 
 // TODO: Allow the location of the console files to be specified?
 var consoleExec = 'nsolid';
-var consoleArgs = [path.resolve(__dirname, '../nsolid/console/bin/nsolid-console'), '--interval=1000'];
+var consoleArgs = [path.resolve(__dirname, '../dependencies/console/bin/nsolid-console'), '--interval=1000'];
 
 // Start up target app with nsolid
 var appExec = 'nsolid';
@@ -60,13 +60,13 @@ function validateParams(paramsObj, args) {
 
   // If appName was missing or blank
   if (!paramsObj.appName || paramsObj.appName === true) {
-    console.log('\n  Missing app name.\n\n         Specify with the --name flag. \n\n  Exiting... \n');
+    console.log('\n  Missing app name.\n\n Specify with the --name flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 
   // If appPath was missing or blank
   if (!paramsObj.appPath || paramsObj.appPath === true) {
-    console.log('\n  Missing path to the app you want to run with nsolid.\n\n         Specify with the --path flag. \n\n  Exiting... \n');
+    console.log('\n  Missing path to the app you want to run with nsolid.\n\n Specify with the --path flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 }
