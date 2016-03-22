@@ -7,7 +7,13 @@ Assumes incoming body is JSON and parseable.
 */
 function requestAsync(url) {
   return new Promise((resolve, reject) => {
-    request(url, (error, response, body) => {
+    request({
+      url,
+      headers: {
+        'user-agent': 'nsolid-manager'
+      }
+    }, (error, response, body) => {
+
       if (!error && response.statusCode === 200) {
         try {
           const jsonBody = JSON.parse(body);
@@ -24,6 +30,15 @@ function requestAsync(url) {
   });
 }
 
-module.export = {
-  requestAsync
+/*
+Accepts a string that is formatted in template string
+format, and returns a new string
+*/
+function templateString(string, context) {
+  return string.replace(/\$\{([^\$\{\}\r\n]*)\}/g, (match, id) => context[id]);
+}
+
+module.exports = {
+  requestAsync,
+  templateString
 };

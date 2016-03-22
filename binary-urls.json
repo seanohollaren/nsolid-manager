@@ -1,21 +1,21 @@
 {
   "nsolid": {
     "file": "nsolid-${version}-${platform}-x64.tar.gz",
-    "metaUrl": "https://nsolid-download.nodesource.com/download/nsolid-node/release/",
-    "dir": "https://nsolid-download.nodesource.com/download/nsolid-node/release/",
+    "metaUrl": "https://nsolid-download.nodesource.com/download/nsolid-node/release/index.json",
+    "dir": "https://nsolid-download.nodesource.com/download/nsolid-node/release/"
   },
   "nsolid-hub": {
     "file": "nsolid-proxy-${version}.tar.gz",
-    "metaUrl": "https://nsolid-download.nodesource.com/download/nsolid-proxy/release/",
-    "dir": "https://nsolid-download.nodesource.com/download/nsolid-proxy/release/",
+    "metaUrl": "https://nsolid-download.nodesource.com/download/nsolid-proxy/release/index.json",
+    "dir": "https://nsolid-download.nodesource.com/download/nsolid-proxy/release/"
   },
   "nsolid-console": {
     "file": "nsolid-console-${version}-${platform}-x64.tar.gz",
-    "metaUrl": "https://nsolid-download.nodesource.com/download/nsolid-console/release/",
-    "dir": "https://nsolid-download.nodesource.com/download/nsolid-console/release/",
+    "metaUrl": "https://nsolid-download.nodesource.com/download/nsolid-console/release/index.json",
+    "dir": "https://nsolid-download.nodesource.com/download/nsolid-console/release/"
   },
   "etcd": {
-    "file": "etcd-${version}-${platform}-amd64${extension}"
+    "file": "etcd-${version}-${platform}-amd64${extension}",
     "metaUrl": "https://api.github.com/repos/coreos/etcd/releases"
   }
 }
