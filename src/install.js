@@ -14,6 +14,7 @@ const FileDownloader = require('./lib/file-downloader.js');
 const binaryUrls = require('./binary-urls.json');
 const os = require('os');
 const fs = require('fs');
+const ncp = require('ncp');
 const targz = require('tar.gz');
 const unzip = require('unzip');
 const _ = require('lodash');
@@ -170,7 +171,12 @@ function downloadEtcd(metaData) {
       platform,
       extension: (platform === 'linux') ? '.tar.gz' : '.zip'
     });
-
+    // without extension
+    const rawfilename = utils.templateString(metaData.file, {
+      version,
+      platform,
+      extension: ''
+    });
     // find the relevant asset from a list of them
     const asset = _.find(metaData.meta.assets, {
       name: filename
@@ -199,7 +205,7 @@ function downloadEtcd(metaData) {
           }).createWriteStream(`${__dirname}/dependencies/etcd`);
         }
         else {
-          outputStream = unzip.Extract({//eslint-disable-line
+          outputStream = unzip.Extract({ //eslint-disable-line
             path: `${__dirname}/dependencies/etcd`
           });
         }
@@ -209,7 +215,21 @@ function downloadEtcd(metaData) {
         fs.createReadStream(file)
           .pipe(outputStream)
           .on('end', () => {
-            resolve();
+
+            // if we are on mac we need to move the location of the
+            // up one level. So we will just the NCP library
+            if (platform === 'darwin') {
+              ncp(
+                `${__dirname}/dependencies/etcd/${rawfilename}`,
+                `${__dirname}/dependencies/etcd/`,
+                (err) => {
+                  if (err) return reject(err);
+                  return resolve();
+                });
+            }
+            else {
+              resolve();
+            }
           });
 
 

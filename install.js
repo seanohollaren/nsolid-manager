@@ -1,7 +1,5 @@
 'use strict';
 
-require('babel-polyfill');
-
 /* ----------------------------------
 This file will install all necessary dependencies
 
@@ -16,6 +14,7 @@ var FileDownloader = require('./lib/file-downloader.js');
 var binaryUrls = require('./binary-urls.json');
 var os = require('os');
 var fs = require('fs');
+var ncp = require('ncp');
 var targz = require('tar.gz');
 var unzip = require('unzip');
 var _ = require('lodash');
@@ -142,7 +141,12 @@ function downloadEtcd(metaData) {
       platform: platform,
       extension: platform === 'linux' ? '.tar.gz' : '.zip'
     });
-
+    // without extension
+    var rawfilename = utils.templateString(metaData.file, {
+      version: version,
+      platform: platform,
+      extension: ''
+    });
     // find the relevant asset from a list of them
     var asset = _.find(metaData.meta.assets, {
       name: filename
@@ -174,7 +178,17 @@ function downloadEtcd(metaData) {
 
       // untar file
       fs.createReadStream(file).pipe(outputStream).on('end', function () {
-        resolve();
+
+        // if we are on mac we need to move the location of the
+        // up one level. So we will just the NCP library
+        if (platform === 'darwin') {
+          ncp(__dirname + '/dependencies/etcd/' + rawfilename, __dirname + '/dependencies/etcd/', function (err) {
+            if (err) return reject(err);
+            return resolve();
+          });
+        } else {
+          resolve();
+        }
       });
     }).start();
   });

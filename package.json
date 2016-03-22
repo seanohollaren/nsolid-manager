@@ -30,6 +30,7 @@
     "lodash": "^4.6.1",
     "minimist": "^1.2.0",
     "mocha": "^2.4.5",
+    "ncp": "^2.0.0",
     "request": "^2.69.0",
     "request-progress": "^2.0.1",
     "tar.gz": "1.0.0",
