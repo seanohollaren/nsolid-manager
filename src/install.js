@@ -214,24 +214,29 @@ function downloadEtcd(metaData) {
         // untar file
         fs.createReadStream(file)
           .pipe(outputStream)
-          .on('end', () => {
+          .on('close', streamCleanup);
 
-            // if we are on mac we need to move the location of the
-            // unzipped folder up one level. So we will just the NCP library
-            if (platform === 'darwin') {
-              ncp(
-                `${__dirname}/dependencies/etcd/${rawfilename}`,
-                `${__dirname}/dependencies/etcd/`,
-                (err) => {
-                  if (err) return reject(err);
-                  return resolve();
-                });
-            }
-            else {
-              resolve();
-            }
-          });
-
+        function streamCleanup() {
+          console.log('Inside fs.createReadStream end block.');
+          console.log(`Platform: ${platform}`);
+          // if we are on mac we need to move the location of the
+          // unzipped folder up one level. So we will just the NCP library
+          if (platform === 'darwin') {
+            console.log('Detected Darwin');
+            console.log(`Copying From: ${__dirname}/dependencies/etcd/${rawfilename}`);
+            console.log(`To: ${__dirname}/dependencies/etcd/`);
+            ncp(
+              `${__dirname}/dependencies/etcd/${rawfilename}`,
+              `${__dirname}/dependencies/etcd/`,
+              (err) => {
+                if (err) return reject(err);
+                return resolve();
+              });
+          }
+          else {
+            resolve();
+          }
+        }
 
       })
       .start();
