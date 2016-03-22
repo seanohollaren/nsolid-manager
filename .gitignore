@@ -3,3 +3,4 @@ default.etcd/
 nsolid_proxy.etcd/
 npm-debug.log
 dependencies
+test/ignore/*
