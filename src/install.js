@@ -217,7 +217,7 @@ function downloadEtcd(metaData) {
           .on('end', () => {
 
             // if we are on mac we need to move the location of the
-            // up one level. So we will just the NCP library
+            // unzipped folder up one level. So we will just the NCP library
             if (platform === 'darwin') {
               ncp(
                 `${__dirname}/dependencies/etcd/${rawfilename}`,
