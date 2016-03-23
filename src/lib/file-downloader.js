@@ -4,7 +4,6 @@ const progress = require('request-progress');
 const fs = require('fs');
 const request = require('request');
 const EventEmitter = require('events').EventEmitter;
-const path = require('path');
 
 /*
 Download files to a location and validate checksum

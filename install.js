@@ -58,10 +58,10 @@ Promise Workflow
 debug('Being Loading Package Metadata');
 loadAllMetaData(binaryUrls).then(function (metaData) {
   debug('Finish loading all meta data about 3rd party packages');
-  //TODO (Alex): Perform some check for existing libraries
+  // TODO (Alex): Perform some check for existing libraries
   return downloadAndExtractAll(metaData);
 }).then(function (result) {
-  console.log('Done Loading Dependencies');
+  console.log('Done Loading Dependencies %s', result);
 }).catch(function (err) {
   console.error(err, err.stack);
 });
@@ -100,13 +100,14 @@ function downloadNsolidPackage(name, allMetaData) {
       fs.createReadStream(file).pipe(targz({}, {
         strip: 1
       }).createWriteStream(dependencyDir + '/' + name)).on('end', function () {
+        debug('Extract Complete for %s', filename);
         resolve();
       });
     }).start();
   });
 }
 
-//Download and extract ETCD
+// Download and extract ETCD
 function downloadEtcd(metaData) {
   return new Promise(function (resolve, reject) {
 
@@ -216,7 +217,7 @@ function loadNsolidMetaData(name, version) {
   return new Promise(function (resolve, reject) {
     utils.requestAsync(binaryUrls[name].metaUrl).then(function (metaData) {
       debug('Received meta data response for %s', name);
-      //find specific version from meta data
+      // find specific version from meta data
       if (version) {
         debug('Searching for version %s for %s', version, name);
         var vData = _.find(metaData, {
@@ -226,7 +227,7 @@ function loadNsolidMetaData(name, version) {
         return reject(new Error('Unable to find version data for ' + name));
       }
       debug('Returning newest version for %s', name);
-      //return newest version
+      // return newest version
       return resolve(metaData[0]);
     }, reject);
   });
