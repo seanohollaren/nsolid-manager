@@ -31,6 +31,7 @@
     "lodash": "^4.6.1",
     "minimist": "^1.2.0",
     "mocha": "^2.4.5",
+    "multi-progress": "^1.0.0",
     "ncp": "^2.0.0",
     "request": "^2.69.0",
     "request-progress": "^2.0.1",

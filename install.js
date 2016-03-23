@@ -9,16 +9,24 @@ TODO (Alex): Add Tests
 TODO (Alex): Provide more sanity checking of Filesystem changes
  -----------------------------------*/
 
+/*
+Until this bug is fixed: https://github.com/eslint/eslint/issues/1801
+We will not be enforcing indentation in eslint
+*/
+/* eslint indent: [0] */
+
 var FileDownloader = require('./lib/file-downloader.js');
 var binaryUrls = require('./binary-urls.json');
 var os = require('os');
 var fs = require('fs');
+var chalk = require('chalk');
 var ncp = require('ncp');
 var debug = require('debug')('install');
 var targz = require('tar.gz');
 var unzip = require('unzip');
 var _ = require('lodash');
 var utils = require('./lib/utils');
+var multiProgress = require('multi-progress');
 
 // Windows is not currently supported
 var isWin = /^win/.test(process.platform);
@@ -61,6 +69,7 @@ loadAllMetaData(binaryUrls).then(function (metaData) {
   // TODO (Alex): Perform some check for existing libraries
   return downloadAndExtractAll(metaData);
 }).then(function (result) {
+  process.stdout.write('\n\n\n\n');
   console.log('Done Loading Dependencies %s', result);
 }).catch(function (err) {
   console.error(err, err.stack);
@@ -71,20 +80,39 @@ Functions to download and extract libraries
 **************************************************************** */
 function downloadAndExtractAll(metaData) {
   debug('Beginning download of all packages');
-  var downloadQueue = [downloadNsolidPackage('nsolid-hub', metaData), downloadNsolidPackage('nsolid-console', metaData), downloadNsolidPackage('nsolid', metaData), downloadEtcd(metaData.etcd)];
+
+  var multi = multiProgress(process.stdout);
+
+  var downloadQueue = [downloadNsolidPackage('nsolid-hub', metaData, multi), downloadNsolidPackage('nsolid-console', metaData, multi), downloadNsolidPackage('nsolid', metaData, multi), downloadEtcd(metaData.etcd, multi)];
+
   return Promise.all(downloadQueue);
 }
 
 // Universal function for downloading and extracting
 // a Nsolid package (hub, console, nsolid)
-function downloadNsolidPackage(name, allMetaData) {
+function downloadNsolidPackage(name, allMetaData, multi) {
   return new Promise(function (resolve, reject) {
+    var transferred = 0;
     var metaData = allMetaData[name];
     var version = metaData.meta.version;
     var filename = utils.templateString(metaData.file, {
       version: version,
       platform: platform
     });
+
+    // create a multi line terminal progress bar
+    var bar = multi.newBar('  :stage [:file] :size B ', {
+      complete: '=',
+      incomplete: ' ',
+      width: 30,
+      total: 100
+    });
+    bar.tick({
+      stage: 'Downloading',
+      file: chalk.cyan(filename),
+      size: transferred
+    });
+
     var url = '' + metaData.dir + version + '/' + filename;
     debug('Making request for %s', url);
 
@@ -92,14 +120,30 @@ function downloadNsolidPackage(name, allMetaData) {
       url: url,
       location: dependencyDir + '/' + filename
     }).on('progress', function (state) {
+      transferred = state.size.transferred;
+      bar.tick({
+        stage: 'Downloading',
+        file: chalk.cyan(filename),
+        size: transferred
+      });
       debug('Download Progress for %s: %s', name, state.size.transferred);
     }).on('error', reject).on('done', function (file) {
       debug('File download completed for %s. Starting extract.', name);
+      bar.tick({
+        stage: 'Extracting',
+        file: chalk.cyan(filename),
+        size: transferred
+      });
 
       // untar file
       fs.createReadStream(file).pipe(targz({}, {
         strip: 1
       }).createWriteStream(dependencyDir + '/' + name)).on('end', function () {
+        bar.tick({
+          stage: chalk.green('Completed'),
+          file: chalk.cyan(filename),
+          size: transferred
+        });
         debug('Extract Complete for %s', filename);
         resolve();
       });
@@ -108,8 +152,9 @@ function downloadNsolidPackage(name, allMetaData) {
 }
 
 // Download and extract ETCD
-function downloadEtcd(metaData) {
+function downloadEtcd(metaData, multi) {
   return new Promise(function (resolve, reject) {
+    var transferred = 0;
 
     var version = metaData.meta.tag_name;
     var filename = utils.templateString(metaData.file, {
@@ -133,6 +178,19 @@ function downloadEtcd(metaData) {
       process.exit(1);
     }
 
+    // create a multi line terminal progress bar
+    var bar = multi.newBar('  :stage [:file] :size B ', {
+      complete: '=',
+      incomplete: ' ',
+      width: 30,
+      total: 100
+    });
+    bar.tick({
+      stage: 'Downloading',
+      file: chalk.cyan(filename),
+      size: transferred
+    });
+
     var url = asset.browser_download_url;
     debug('Making request for %s. Filename: %s', url, filename);
 
@@ -140,12 +198,22 @@ function downloadEtcd(metaData) {
       url: url,
       location: dependencyDir + '/' + filename
     }).on('progress', function (state) {
+      transferred = state.size.transferred;
+      bar.tick({
+        stage: 'Downloading',
+        file: chalk.cyan(filename),
+        size: transferred
+      });
       debug('Download Progress for %s: %s', 'etcd', state.size.transferred);
     }).on('error', reject).on('done', function (file) {
       debug('File download completed for etcd. Starting extract.');
+      bar.tick({
+        stage: 'Extracting',
+        file: chalk.cyan(filename),
+        size: transferred
+      });
 
       var outputStream = void 0;
-
       // we need to use unzip on darwin
       if (platform === 'linux') {
         debug('Linux detected. Using targz for etcd extract');
@@ -163,6 +231,11 @@ function downloadEtcd(metaData) {
       fs.createReadStream(file).pipe(outputStream).on('close', streamCleanup);
 
       function streamCleanup() {
+        bar.tick({
+          stage: chalk.green('Completed'),
+          file: chalk.cyan(filename),
+          size: transferred
+        });
         debug('Inside fs.createReadStream end block.');
         debug('Platform: ' + platform);
         // if we are on mac we need to move the location of the

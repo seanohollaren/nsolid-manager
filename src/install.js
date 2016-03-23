@@ -20,12 +20,14 @@ const FileDownloader = require('./lib/file-downloader.js');
 const binaryUrls = require('./binary-urls.json');
 const os = require('os');
 const fs = require('fs');
+const chalk = require('chalk')
 const ncp = require('ncp');
 const debug = require('debug')('install');
 const targz = require('tar.gz');
 const unzip = require('unzip');
 const _ = require('lodash');
 const utils = require('./lib/utils');
+const multiProgress = require('multi-progress');
 
 // Windows is not currently supported
 const isWin = /^win/.test(process.platform);
@@ -69,6 +71,7 @@ loadAllMetaData(binaryUrls).then(metaData => {
     // TODO (Alex): Perform some check for existing libraries
     return downloadAndExtractAll(metaData);
   }).then(result => {
+    process.stdout.write('\n\n\n\n');
     console.log('Done Loading Dependencies %s', result);
   })
   .catch(err => {
@@ -81,25 +84,44 @@ Functions to download and extract libraries
 **************************************************************** */
 function downloadAndExtractAll(metaData) {
   debug('Beginning download of all packages');
+
+  const multi = multiProgress(process.stdout);
+
   const downloadQueue = [
-    downloadNsolidPackage('nsolid-hub', metaData),
-    downloadNsolidPackage('nsolid-console', metaData),
-    downloadNsolidPackage('nsolid', metaData),
-    downloadEtcd(metaData.etcd)
+    downloadNsolidPackage('nsolid-hub', metaData, multi),
+    downloadNsolidPackage('nsolid-console', metaData, multi),
+    downloadNsolidPackage('nsolid', metaData, multi),
+    downloadEtcd(metaData.etcd, multi)
   ];
+
   return Promise.all(downloadQueue);
 }
 
 // Universal function for downloading and extracting
 // a Nsolid package (hub, console, nsolid)
-function downloadNsolidPackage(name, allMetaData) {
+function downloadNsolidPackage(name, allMetaData, multi) {
   return new Promise((resolve, reject) => {
+    let transferred = 0;
     const metaData = allMetaData[name];
     const version = metaData.meta.version;
     const filename = utils.templateString(metaData.file, {
       version,
       platform
     });
+
+    // create a multi line terminal progress bar
+    const bar = multi.newBar('  :stage [:file] :size B ', {
+      complete: '=',
+      incomplete: ' ',
+      width: 30,
+      total: 100
+    });
+    bar.tick({
+      stage: 'Downloading',
+      file: chalk.cyan(filename),
+      size: transferred
+    });
+
     const url = `${metaData.dir}${version}/${filename}`;
     debug('Making request for %s', url);
 
@@ -108,11 +130,22 @@ function downloadNsolidPackage(name, allMetaData) {
         location: `${dependencyDir}/${filename}`
       })
       .on('progress', state => {
+        transferred = state.size.transferred;
+        bar.tick({
+          stage: 'Downloading',
+          file: chalk.cyan(filename),
+          size: transferred
+        });
         debug('Download Progress for %s: %s', name, state.size.transferred);
       })
       .on('error', reject)
       .on('done', file => {
         debug('File download completed for %s. Starting extract.', name);
+        bar.tick({
+          stage: 'Extracting',
+          file: chalk.cyan(filename),
+          size: transferred
+        });
 
         // untar file
         fs.createReadStream(file)
@@ -120,6 +153,11 @@ function downloadNsolidPackage(name, allMetaData) {
             strip: 1
           }).createWriteStream(`${dependencyDir}/${name}`))
           .on('end', () => {
+            bar.tick({
+              stage: chalk.green('Completed'),
+              file: chalk.cyan(filename),
+              size: transferred
+            });
             debug('Extract Complete for %s', filename);
             resolve();
           });
@@ -130,8 +168,9 @@ function downloadNsolidPackage(name, allMetaData) {
 }
 
 // Download and extract ETCD
-function downloadEtcd(metaData) {
+function downloadEtcd(metaData, multi) {
   return new Promise((resolve, reject) => {
+    let transferred = 0;
 
     const version = metaData.meta.tag_name;
     const filename = utils.templateString(metaData.file, {
@@ -155,6 +194,19 @@ function downloadEtcd(metaData) {
       process.exit(1);
     }
 
+    // create a multi line terminal progress bar
+    const bar = multi.newBar('  :stage [:file] :size B ', {
+      complete: '=',
+      incomplete: ' ',
+      width: 30,
+      total: 100
+    });
+    bar.tick({
+      stage: 'Downloading',
+      file: chalk.cyan(filename),
+      size: transferred
+    });
+
     const url = asset.browser_download_url;
     debug('Making request for %s. Filename: %s', url, filename);
 
@@ -163,14 +215,24 @@ function downloadEtcd(metaData) {
         location: `${dependencyDir}/${filename}`
       })
       .on('progress', state => {
+        transferred = state.size.transferred;
+        bar.tick({
+          stage: 'Downloading',
+          file: chalk.cyan(filename),
+          size: transferred
+        });
         debug('Download Progress for %s: %s', 'etcd', state.size.transferred);
       })
       .on('error', reject)
       .on('done', file => {
         debug('File download completed for etcd. Starting extract.');
+        bar.tick({
+          stage: 'Extracting',
+          file: chalk.cyan(filename),
+          size: transferred
+        });
 
         let outputStream;
-
         // we need to use unzip on darwin
         if (platform === 'linux') {
           debug('Linux detected. Using targz for etcd extract');
@@ -192,6 +254,11 @@ function downloadEtcd(metaData) {
           .on('close', streamCleanup);
 
         function streamCleanup() {
+          bar.tick({
+            stage: chalk.green('Completed'),
+            file: chalk.cyan(filename),
+            size: transferred
+          });
           debug('Inside fs.createReadStream end block.');
           debug(`Platform: ${platform}`);
           // if we are on mac we need to move the location of the
