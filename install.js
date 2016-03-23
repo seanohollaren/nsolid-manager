@@ -63,7 +63,7 @@ if (!fs.existsSync(dependencyDir)) {
 /*
 Promise Workflow
 */
-debug('Being Loading Package Metadata');
+debug('Begin Loading Package Metadata');
 loadAllMetaData(binaryUrls).then(function (metaData) {
   debug('Finish loading all meta data about 3rd party packages');
   // TODO (Alex): Perform some check for existing libraries
