@@ -19,20 +19,23 @@ validateParams(params, argv);
 
 console.log('\n  Launching app: ' + params.appName + '\n');
 
+var nsolidBinary = path.resolve(__dirname, '../dependencies/nsolid/bin/nsolid');
+var etcd = path.resolve(__dirname, '../dependencies/etcd/etcd');
+
 // Define strings to start up child processes
-var etcdExec = 'etcd';
-var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
+var etcdExec = etcd;
+var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new', '-data-dir', '../dependencies/etcd/'];
 
 // TODO: Allow the location of the proxy files to be specified?
-var proxyExec = 'nsolid';
-var proxyArgs = [path.resolve(__dirname, '../nsolid/proxy/proxy.js'), '--config', path.resolve(__dirname, '../nsolid/proxy/.nsolid-proxyrc')];
+var proxyExec = nsolidBinary;
+var proxyArgs = [path.resolve(__dirname, '../dependencies/nsolid-hub/proxy.js'), '--config', path.resolve(__dirname, '../dependencies/nsolid-hub/.nsolid-proxyrc')];
 
 // TODO: Allow the location of the console files to be specified?
-var consoleExec = 'nsolid';
-var consoleArgs = [path.resolve(__dirname, '../nsolid/console/bin/nsolid-console'), '--interval=1000'];
+var consoleExec = nsolidBinary;
+var consoleArgs = [path.resolve(__dirname, '../dependencies/nsolid-console/bin/nsolid-console'), '--interval=1000'];
 
 // Start up target app with nsolid
-var appExec = 'nsolid';
+var appExec = nsolidBinary;
 var appArgs = [params.appPath];
 var appEnvVars = getEnvironmentVars(params);
 
@@ -42,7 +45,13 @@ var children = [];
 // Spawn child processes and add to children array
 children.push(spawn(etcdExec, etcdArgs));
 children.push(spawn(proxyExec, proxyArgs));
-children.push(spawn(consoleExec, consoleArgs));
+children.push(spawn(consoleExec, consoleArgs, {
+  // provide CWD to solve unknown babel error
+  cwd: path.resolve(__dirname, '..'),
+  env: {
+    NODE_ENV: 'production'
+  }
+}));
 children.push(spawn(appExec, appArgs, appEnvVars));
 
 // Pipe output and err through current process
@@ -60,13 +69,13 @@ function validateParams(paramsObj, args) {
 
   // If appName was missing or blank
   if (!paramsObj.appName || paramsObj.appName === true) {
-    console.log('\n  Missing app name.\n\n         Specify with the --name flag. \n\n  Exiting... \n');
+    console.log('\n  Missing app name.\n\n  Specify with the --name flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 
   // If appPath was missing or blank
   if (!paramsObj.appPath || paramsObj.appPath === true) {
-    console.log('\n  Missing path to the app you want to run with nsolid.\n\n         Specify with the --path flag. \n\n  Exiting... \n');
+    console.log('\n  Missing path to the app you want to run with nsolid.\n\n  Specify with the --path flag. \n\n  Exiting... \n');
     process.exit(1);
   }
 }
