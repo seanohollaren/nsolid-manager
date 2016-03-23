@@ -40,6 +40,14 @@ switch (platform) {
 }
 
 /*
+Test if Dependency Directory Exists
+*/
+const dependencyDir = `${__dirname}/dependencies`;
+if (!fs.existsSync(dependencyDir)) {
+  fs.mkdirSync(dependencyDir);
+}
+
+/*
 Promise Workflow
 */
 loadAllMetaData(binaryUrls).then(metaData => {
@@ -82,7 +90,7 @@ function downloadHub(metaData) {
 
     new FileDownloader({
         url,
-        location: `${__dirname}/dependencies/${filename}`
+        location: `${dependencyDir}/${filename}`
       })
       .on('progress', state => {})
       .on('error', reject)
@@ -91,7 +99,7 @@ function downloadHub(metaData) {
         fs.createReadStream(file)
           .pipe(targz({}, {
             strip: 1
-          }).createWriteStream(`${__dirname}/dependencies/proxy`))
+          }).createWriteStream(`${dependencyDir}/proxy`))
           .on('end', () => {
             resolve();
           });
@@ -112,7 +120,7 @@ function downloadConsole(metaData) {
 
     new FileDownloader({
         url,
-        location: `${__dirname}/dependencies/${filename}`
+        location: `${dependencyDir}/${filename}`
       })
       .on('progress', state => {})
       .on('error', reject)
@@ -121,7 +129,7 @@ function downloadConsole(metaData) {
         fs.createReadStream(file)
           .pipe(targz({}, {
             strip: 1
-          }).createWriteStream(`${__dirname}/dependencies/console`))
+          }).createWriteStream(`${dependencyDir}/console`))
           .on('end', () => {
             resolve();
           });
@@ -142,7 +150,7 @@ function downloadNsolid(metaData) {
 
     new FileDownloader({
         url,
-        location: `${__dirname}/dependencies/${filename}`
+        location: `${dependencyDir}/${filename}`
       })
       .on('progress', state => {})
       .on('error', reject)
@@ -151,7 +159,7 @@ function downloadNsolid(metaData) {
         fs.createReadStream(file)
           .pipe(targz({}, {
             strip: 1
-          }).createWriteStream(`${__dirname}/dependencies/nsolid`))
+          }).createWriteStream(`${dependencyDir}/nsolid`))
           .on('end', () => {
             resolve();
           });
@@ -191,7 +199,7 @@ function downloadEtcd(metaData) {
 
     new FileDownloader({
         url,
-        location: `${__dirname}/dependencies/${filename}`
+        location: `${dependencyDir}/${filename}`
       })
       .on('progress', state => {})
       .on('error', reject)
@@ -202,11 +210,11 @@ function downloadEtcd(metaData) {
         if (platform === 'linux') {
           outputStream = targz({}, {
             strip: 1
-          }).createWriteStream(`${__dirname}/dependencies/etcd`);
+          }).createWriteStream(`${dependencyDir}/etcd`);
         }
         else {
           outputStream = unzip.Extract({ //eslint-disable-line
-            path: `${__dirname}/dependencies/etcd`
+            path: `${dependencyDir}/etcd`
           });
         }
 
@@ -223,16 +231,16 @@ function downloadEtcd(metaData) {
           // unzipped folder up one level. So we will just the NCP library
           if (platform === 'darwin') {
             console.log('Detected Darwin');
-            console.log(`Copying From: ${__dirname}/dependencies/etcd/${rawfilename}`);
-            console.log(`To: ${__dirname}/dependencies/etcd/`);
+            console.log(`Copying From: ${dependencyDir}/etcd/${rawfilename}`);
+            console.log(`To: ${dependencyDir}/etcd/`);
             ncp(
-              `${__dirname}/dependencies/etcd/${rawfilename}`,
-              `${__dirname}/dependencies/etcd/`,
+              `${dependencyDir}/etcd/${rawfilename}`,
+              `${dependencyDir}/etcd/`,
               (err) => {
                 if (err) return reject(err);
 
                 // chmod file
-                fs.chmodSync(`${__dirname}/dependencies/etcd/etcd`, '0740');
+                fs.chmodSync(`${dependencyDir}/etcd/etcd`, '0740');
                 return resolve();
               });
           }

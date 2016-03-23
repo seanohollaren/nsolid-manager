@@ -40,6 +40,14 @@ switch (platform) {
 }
 
 /*
+Test if Dependency Directory Exists
+*/
+var dependencyDir = __dirname + '/dependencies';
+if (!fs.existsSync(dependencyDir)) {
+  fs.mkdirSync(dependencyDir);
+}
+
+/*
 Promise Workflow
 */
 loadAllMetaData(binaryUrls).then(function (metaData) {
@@ -74,12 +82,12 @@ function downloadHub(metaData) {
 
     new FileDownloader({
       url: url,
-      location: __dirname + '/dependencies/' + filename
+      location: dependencyDir + '/' + filename
     }).on('progress', function (state) {}).on('error', reject).on('done', function (file) {
       // untar file
       fs.createReadStream(file).pipe(targz({}, {
         strip: 1
-      }).createWriteStream(__dirname + '/dependencies/proxy')).on('end', function () {
+      }).createWriteStream(dependencyDir + '/proxy')).on('end', function () {
         resolve();
       });
     }).start();
@@ -97,12 +105,12 @@ function downloadConsole(metaData) {
 
     new FileDownloader({
       url: url,
-      location: __dirname + '/dependencies/' + filename
+      location: dependencyDir + '/' + filename
     }).on('progress', function (state) {}).on('error', reject).on('done', function (file) {
       // untar file
       fs.createReadStream(file).pipe(targz({}, {
         strip: 1
-      }).createWriteStream(__dirname + '/dependencies/console')).on('end', function () {
+      }).createWriteStream(dependencyDir + '/console')).on('end', function () {
         resolve();
       });
     }).start();
@@ -120,12 +128,12 @@ function downloadNsolid(metaData) {
 
     new FileDownloader({
       url: url,
-      location: __dirname + '/dependencies/' + filename
+      location: dependencyDir + '/' + filename
     }).on('progress', function (state) {}).on('error', reject).on('done', function (file) {
       // untar file
       fs.createReadStream(file).pipe(targz({}, {
         strip: 1
-      }).createWriteStream(__dirname + '/dependencies/nsolid')).on('end', function () {
+      }).createWriteStream(dependencyDir + '/nsolid')).on('end', function () {
         resolve();
       });
     }).start();
@@ -161,7 +169,7 @@ function downloadEtcd(metaData) {
 
     new FileDownloader({
       url: url,
-      location: __dirname + '/dependencies/' + filename
+      location: dependencyDir + '/' + filename
     }).on('progress', function (state) {}).on('error', reject).on('done', function (file) {
       var outputStream = void 0;
 
@@ -169,10 +177,10 @@ function downloadEtcd(metaData) {
       if (platform === 'linux') {
         outputStream = targz({}, {
           strip: 1
-        }).createWriteStream(__dirname + '/dependencies/etcd');
+        }).createWriteStream(dependencyDir + '/etcd');
       } else {
         outputStream = unzip.Extract({ //eslint-disable-line
-          path: __dirname + '/dependencies/etcd'
+          path: dependencyDir + '/etcd'
         });
       }
 
@@ -186,13 +194,13 @@ function downloadEtcd(metaData) {
         // unzipped folder up one level. So we will just the NCP library
         if (platform === 'darwin') {
           console.log('Detected Darwin');
-          console.log('Copying From: ' + __dirname + '/dependencies/etcd/' + rawfilename);
-          console.log('To: ' + __dirname + '/dependencies/etcd/');
-          ncp(__dirname + '/dependencies/etcd/' + rawfilename, __dirname + '/dependencies/etcd/', function (err) {
+          console.log('Copying From: ' + dependencyDir + '/etcd/' + rawfilename);
+          console.log('To: ' + dependencyDir + '/etcd/');
+          ncp(dependencyDir + '/etcd/' + rawfilename, dependencyDir + '/etcd/', function (err) {
             if (err) return reject(err);
 
             // chmod file
-            fs.chmodSync(__dirname + '/dependencies/etcd/etcd', '0740');
+            fs.chmodSync(dependencyDir + '/etcd/etcd', '0740');
             return resolve();
           });
         } else {
