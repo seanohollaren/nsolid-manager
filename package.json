@@ -11,7 +11,8 @@
     "build": "node_modules/babel-cli/bin/babel.js src -d ./ --presets es2015"
   },
   "bin": {
-    "nsolid-manager": "./src/bin/nsolid-manager.js"
+    "nsolid-manager": "./src/bin/nsolid-manager.js",
+    "nsm": "./src/bin/nsolid-manager.js"
   },
   "keywords": [
     "nsolid",
