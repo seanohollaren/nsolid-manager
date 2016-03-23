@@ -24,11 +24,11 @@ var etcd = path.resolve(__dirname, '../dependencies/etcd/etcd');
 
 // Define strings to start up child processes
 var etcdExec = etcd;
-var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
+var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new', '-data-dir', '../dependencies/etcd/'];
 
 // TODO: Allow the location of the proxy files to be specified?
 var proxyExec = nsolidBinary;
-var proxyArgs = [path.resolve(__dirname, '../dependencies/nsolid-hub/proxy.js'), '--config', path.resolve(__dirname, '../dependencies/proxy/.nsolid-proxyrc')];
+var proxyArgs = [path.resolve(__dirname, '../dependencies/nsolid-hub/proxy.js'), '--config', path.resolve(__dirname, '../dependencies/nsolid-hub/.nsolid-proxyrc')];
 
 // TODO: Allow the location of the console files to be specified?
 var consoleExec = nsolidBinary;
@@ -45,7 +45,10 @@ var children = [];
 // Spawn child processes and add to children array
 children.push(spawn(etcdExec, etcdArgs));
 children.push(spawn(proxyExec, proxyArgs));
-children.push(spawn(consoleExec, consoleArgs));
+children.push(spawn(consoleExec, consoleArgs, {
+  // provide CWD to solve unknown babel error
+  cwd: path.resolve(__dirname, '..')
+}));
 children.push(spawn(appExec, appArgs, appEnvVars));
 
 // Pipe output and err through current process

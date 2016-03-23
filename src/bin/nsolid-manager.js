@@ -23,7 +23,7 @@ const etcd = path.resolve(__dirname, '../dependencies/etcd/etcd');
 
 // Define strings to start up child processes
 const etcdExec = etcd;
-const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new'];
+const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new', '-data-dir', '../dependencies/etcd/'];
 
 // TODO: Allow the location of the proxy files to be specified?
 const proxyExec = nsolidBinary;
@@ -44,7 +44,10 @@ const children = [];
 // Spawn child processes and add to children array
 children.push(spawn(etcdExec, etcdArgs));
 children.push(spawn(proxyExec, proxyArgs));
-children.push(spawn(consoleExec, consoleArgs));
+children.push(spawn(consoleExec, consoleArgs, {
+  // provide CWD to solve unknown babel error
+  cwd: path.resolve(__dirname, '..')
+}));
 children.push(spawn(appExec, appArgs, appEnvVars));
 
 // Pipe output and err through current process
