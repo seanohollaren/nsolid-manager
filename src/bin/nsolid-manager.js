@@ -68,13 +68,13 @@ function validateParams(paramsObj, args) {
 
   // If appName was missing or blank
   if (!paramsObj.appName || paramsObj.appName === true) {
-    console.log(`\n  Missing app name.\n\n Specify with the --name flag. \n\n  Exiting... \n`);
+    console.log(`\n  Missing app name.\n\n  Specify with the --name flag. \n\n  Exiting... \n`);
     process.exit(1);
   }
 
   // If appPath was missing or blank
   if (!paramsObj.appPath || paramsObj.appPath === true) {
-    console.log(`\n  Missing path to the app you want to run with nsolid.\n\n Specify with the --path flag. \n\n  Exiting... \n`);
+    console.log(`\n  Missing path to the app you want to run with nsolid.\n\n  Specify with the --path flag. \n\n  Exiting... \n`);
     process.exit(1);
   }
 }
