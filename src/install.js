@@ -9,6 +9,13 @@ TODO (Alex): Add Tests
 TODO (Alex): Provide more sanity checking of Filesystem changes
  -----------------------------------*/
 
+/*
+Until this bug is fixed: https://github.com/eslint/eslint/issues/1801
+We will not be enforcing indentation in eslint
+*/
+/* eslint indent: [0] */
+
+
 const FileDownloader = require('./lib/file-downloader.js');
 const binaryUrls = require('./binary-urls.json');
 const os = require('os');

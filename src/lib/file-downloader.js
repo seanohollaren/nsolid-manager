@@ -6,6 +6,13 @@ const request = require('request');
 const EventEmitter = require('events').EventEmitter;
 
 /*
+Until this bug is fixed: https://github.com/eslint/eslint/issues/1801
+We will not be enforcing indentation in eslint
+*/
+/* eslint indent: [0] */
+
+
+/*
 Download files to a location and validate checksum
 Accepts: checksum, location, url
 Emits: progress, error, done
