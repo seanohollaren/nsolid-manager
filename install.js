@@ -263,8 +263,6 @@ function downloadEtcd(metaData, multi) {
 /* ***************************************************************
 Functions to load meta data
 Version example: `v3.4.2`
-TODO (Alex): DRY this up. This is current broken into highly
-redundant functions to make edge cases with each easier to deal with
 **************************************************************** */
 function loadAllMetaData(metaData) {
 
