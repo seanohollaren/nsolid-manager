@@ -6,7 +6,6 @@ This file will install all necessary dependencies
 TODO (Alex): Checksum download files
 TODO (Alex): put extracted files into versioned sub folders
 TODO (Alex): Add Tests
-TODO (Alex): DRY up code and move into modules
 TODO (Alex): Provide more sanity checking of Filesystem changes
  -----------------------------------*/
 
@@ -15,6 +14,7 @@ const binaryUrls = require('./binary-urls.json');
 const os = require('os');
 const fs = require('fs');
 const ncp = require('ncp');
+const debug = require('debug')('install');
 const targz = require('tar.gz');
 const unzip = require('unzip');
 const _ = require('lodash');
@@ -29,6 +29,7 @@ if (isWin) {
 
 // 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 let platform = os.platform();
+debug('Raw Platform %s', platform);
 // map platforms to 2
 switch (platform) {
   case 'sunos':
@@ -38,23 +39,30 @@ switch (platform) {
   default:
     break;
 }
+debug('Mapped Platform %s', platform);
 
 /*
 Test if Dependency Directory Exists
 */
 const dependencyDir = `${__dirname}/dependencies`;
 if (!fs.existsSync(dependencyDir)) {
+  debug('Creating Dependency Directory');
   fs.mkdirSync(dependencyDir);
+}
+else {
+  debug('Dependency Directory Already Exists');
 }
 
 /*
 Promise Workflow
 */
+debug('Being Loading Package Metadata');
 loadAllMetaData(binaryUrls).then(metaData => {
+    debug('Finish loading all meta data about 3rd party packages');
     //TODO (Alex): Perform some check for existing libraries
     return downloadAndExtractAll(metaData);
   }).then(result => {
-    console.log('Done Downloading');
+    console.log('Done Loading Dependencies');
   })
   .catch(err => {
     console.error(err, err.stack);
@@ -63,74 +71,49 @@ loadAllMetaData(binaryUrls).then(metaData => {
 
 /* ***************************************************************
 Functions to download and extract libraries
-TODO (Alex): DRY this up. This is current broken into highly
-redundant functions to make edge cases with each easier to deal with
 **************************************************************** */
 function downloadAndExtractAll(metaData) {
-
+  debug('Beginning download of all packages');
   const downloadQueue = [
-    downloadHub(metaData['nsolid-hub']),
-    downloadConsole(metaData['nsolid-console']),
-    downloadNsolid(metaData.nsolid),
+    downloadNsolidPackage('nsolid-hub', metaData),
+    downloadNsolidPackage('nsolid-console', metaData),
+    downloadNsolidPackage('nsolid', metaData),
     downloadEtcd(metaData.etcd)
   ];
-
   return Promise.all(downloadQueue);
-
 }
 
-function downloadHub(metaData) {
+// Universal function for downloading and extracting
+// a Nsolid package (hub, console, nsolid)
+function downloadNsolidPackage(name, allMetaData) {
   return new Promise((resolve, reject) => {
+    const metaData = allMetaData[name];
     const version = metaData.meta.version;
     const filename = utils.templateString(metaData.file, {
       version,
       platform
     });
     const url = `${metaData.dir}${version}/${filename}`;
+    debug('Making request for %s', url);
 
     new FileDownloader({
         url,
         location: `${dependencyDir}/${filename}`
       })
-      .on('progress', state => {})
+      .on('progress', state => {
+        debug('Download Progress for %s: %s', name, state.size.transferred);
+      })
       .on('error', reject)
       .on('done', file => {
+        debug('File download completed for %s. Starting extract.', name);
+
         // untar file
         fs.createReadStream(file)
           .pipe(targz({}, {
             strip: 1
-          }).createWriteStream(`${dependencyDir}/proxy`))
+          }).createWriteStream(`${dependencyDir}/${name}`))
           .on('end', () => {
-            resolve();
-          });
-      })
-      .start();
-
-  });
-}
-
-function downloadConsole(metaData) {
-  return new Promise((resolve, reject) => {
-    const version = metaData.meta.version;
-    const filename = utils.templateString(metaData.file, {
-      version,
-      platform
-    });
-    const url = `${metaData.dir}${version}/${filename}`;
-
-    new FileDownloader({
-        url,
-        location: `${dependencyDir}/${filename}`
-      })
-      .on('progress', state => {})
-      .on('error', reject)
-      .on('done', file => {
-        // untar file
-        fs.createReadStream(file)
-          .pipe(targz({}, {
-            strip: 1
-          }).createWriteStream(`${dependencyDir}/console`))
-          .on('end', () => {
+            debug('Extract Complete for %s', filename);
             resolve();
           });
 
@@ -139,37 +122,7 @@ function downloadConsole(metaData) {
   });
 }
 
-function downloadNsolid(metaData) {
-  return new Promise((resolve, reject) => {
-    const version = metaData.meta.version;
-    const filename = utils.templateString(metaData.file, {
-      version,
-      platform
-    });
-    const url = `${metaData.dir}${version}/${filename}`;
-
-    new FileDownloader({
-        url,
-        location: `${dependencyDir}/${filename}`
-      })
-      .on('progress', state => {})
-      .on('error', reject)
-      .on('done', file => {
-        // untar file
-        fs.createReadStream(file)
-          .pipe(targz({}, {
-            strip: 1
-          }).createWriteStream(`${dependencyDir}/nsolid`))
-          .on('end', () => {
-            resolve();
-          });
-
-
-      })
-      .start();
-  });
-}
-
+//Download and extract ETCD
 function downloadEtcd(metaData) {
   return new Promise((resolve, reject) => {
 
@@ -196,23 +149,30 @@ function downloadEtcd(metaData) {
     }
 
     const url = asset.browser_download_url;
+    debug('Making request for %s. Filename: %s', url, filename);
 
     new FileDownloader({
         url,
         location: `${dependencyDir}/${filename}`
       })
-      .on('progress', state => {})
+      .on('progress', state => {
+        debug('Download Progress for %s: %s', 'etcd', state.size.transferred);
+      })
       .on('error', reject)
       .on('done', file => {
+        debug('File download completed for etcd. Starting extract.');
+
         let outputStream;
 
         // we need to use unzip on darwin
         if (platform === 'linux') {
+          debug('Linux detected. Using targz for etcd extract');
           outputStream = targz({}, {
             strip: 1
           }).createWriteStream(`${dependencyDir}/etcd`);
         }
         else {
+          debug('Mac detected. Using unzip for etcd extract');
           outputStream = unzip.Extract({ //eslint-disable-line
             path: `${dependencyDir}/etcd`
           });
@@ -225,14 +185,14 @@ function downloadEtcd(metaData) {
           .on('close', streamCleanup);
 
         function streamCleanup() {
-          console.log('Inside fs.createReadStream end block.');
-          console.log(`Platform: ${platform}`);
+          debug('Inside fs.createReadStream end block.');
+          debug(`Platform: ${platform}`);
           // if we are on mac we need to move the location of the
           // unzipped folder up one level. So we will just the NCP library
           if (platform === 'darwin') {
-            console.log('Detected Darwin');
-            console.log(`Copying From: ${dependencyDir}/etcd/${rawfilename}`);
-            console.log(`To: ${dependencyDir}/etcd/`);
+            debug('Detected Mac');
+            debug(`Copying From: ${dependencyDir}/etcd/${rawfilename}`);
+            debug(`To: ${dependencyDir}/etcd/`);
             ncp(
               `${dependencyDir}/etcd/${rawfilename}`,
               `${dependencyDir}/etcd/`,
@@ -240,6 +200,7 @@ function downloadEtcd(metaData) {
                 if (err) return reject(err);
 
                 // chmod file
+                debug('Chmodding etcd file');
                 fs.chmodSync(`${dependencyDir}/etcd/etcd`, '0740');
                 return resolve();
               });
@@ -264,13 +225,14 @@ redundant functions to make edge cases with each easier to deal with
 function loadAllMetaData(metaData) {
 
   const metaQueue = [
-    loadHubMetaData(),
-    loadConsoleMetaData(),
-    loadNsolidMetaData(),
+    loadNsolidMetaData('nsolid-hub'),
+    loadNsolidMetaData('nsolid-console'),
+    loadNsolidMetaData('nsolid'),
     loadEtcdMetaData()
   ];
 
   return Promise.all(metaQueue).then(results => new Promise(resolve => {
+    debug('Mapping Meta data response back onto original metadata object');
     // map results to existing meta data object
     // TODO (Alex): Be more elegant than this
     const newObj = _.extend({}, metaData);
@@ -282,63 +244,42 @@ function loadAllMetaData(metaData) {
   }));
 }
 
-function loadHubMetaData(version) {
+// Universal function for returning Nsolid meta data
+function loadNsolidMetaData(name, version) {
   return new Promise((resolve, reject) => {
-    utils.requestAsync(binaryUrls['nsolid-hub'].metaUrl).then(metaData => {
+    utils.requestAsync(binaryUrls[name].metaUrl).then(metaData => {
+      debug('Received meta data response for %s', name);
+      //find specific version from meta data
       if (version) {
+        debug('Searching for version %s for %s', version, name);
         const vData = _.find(metaData, {
           version
         });
         if (vData) resolve(vData);
-        return reject(new Error('Unable to find version data for Hub'));
+        return reject(new Error(`Unable to find version data for ${name}`));
       }
-
+      debug('Returning newest version for %s', name);
+      //return newest version
       return resolve(metaData[0]);
 
     }, reject);
   });
 }
 
-function loadConsoleMetaData(version) {
-  return new Promise((resolve, reject) => {
-    utils.requestAsync(binaryUrls['nsolid-console'].metaUrl).then(metaData => {
-      if (version) {
-        const vData = _.find(metaData, {
-          version
-        });
-        if (vData) return resolve(vData);
-        return reject(new Error('Unable to find version data for Console'));
-      }
-      return resolve(metaData[0]);
-    }, reject);
-  });
-}
-
-function loadNsolidMetaData(version) {
-  return new Promise((resolve, reject) => {
-    utils.requestAsync(binaryUrls.nsolid.metaUrl).then(metaData => {
-      if (version) {
-        const vData = _.find(metaData, {
-          version
-        });
-        if (vData) return resolve(vData);
-        return reject(new Error('Unable to find version data for the Nsolid Binary'));
-      }
-      return resolve(metaData[0]);
-    }, reject);
-  });
-}
-
+// load etc release data from github
 function loadEtcdMetaData(version) {
   return new Promise((resolve, reject) => {
     utils.requestAsync(binaryUrls.etcd.metaUrl).then(metaData => {
+      debug('Received meta data response for etcd');
       if (version) {
+        debug('Searching for version %s for %s', version, 'etcd');
         const vData = _.findWhere(metaData, {
           tag_name: version
         });
         if (vData) return resolve(vData);
         return reject(new Error('Unable to find version data for Etcd'));
       }
+      debug('Returning newest version for etcd');
       return resolve(metaData[0]);
     }, reject);
   });
