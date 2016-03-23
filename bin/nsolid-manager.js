@@ -47,7 +47,10 @@ children.push(spawn(etcdExec, etcdArgs));
 children.push(spawn(proxyExec, proxyArgs));
 children.push(spawn(consoleExec, consoleArgs, {
   // provide CWD to solve unknown babel error
-  cwd: path.resolve(__dirname, '..')
+  cwd: path.resolve(__dirname, '..'),
+  env: {
+    NODE_ENV: 'production'
+  }
 }));
 children.push(spawn(appExec, appArgs, appEnvVars));
 
