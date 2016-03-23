@@ -56,13 +56,13 @@ NSOLID_SOCKET = 1111
 
 - nsolid-manager should be able to be installed globally as an npm module, so you don't need to be inside the project folder to call it.
 
-    Until then, you can create an alias in your shell's rc file to get the desired behavior:
+    Until then, you can install it globally with npm from the top level of the repo:
 
-      `alias nsman='/path/to/folder/nsolid-manager/bin/nsolid-manager.js'`
+      `npm install -g`
 
     Then run a program anywhere on the file system like this:
 
-      `nsman -n testApp -p /path/to/app.js`
+      `nsm -n testApp -p /path/to/app.js`
 
 - The manager should offer more optional parameters to override default behavior such as the port on which to host the N|Solid console.
 
