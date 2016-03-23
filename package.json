@@ -26,6 +26,7 @@
   "author": "Sean O'Hollaren",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^1.1.1",
     "checksum": "^0.1.1",
     "extend": "^3.0.0",
     "lodash": "^4.6.1",
