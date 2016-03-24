@@ -15,7 +15,7 @@ npm install -g nsolid-manager
 nsm app.js
 ```
 
-This will spin up N|Solid's dependencies and start an N|Solid Console server on port 3000.
+This will spin up [N|Solid's](https://nodesource.com/products/nsolid) dependencies and start an N|Solid Console server on port 3000.
 
 You can also specify a custom name for your application (reflected in the Console) with the --name flag:
 
