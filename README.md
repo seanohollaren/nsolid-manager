@@ -5,8 +5,6 @@
 
 ## Installation
 
-Install the manager globally with:
-
 ```bash
 npm install -g nsolid-manager
 ```
