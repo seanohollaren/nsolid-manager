@@ -55,6 +55,10 @@ NSOLID_HUB = 'localhost:4001'
 NSOLID_SOCKET = 1111
 ```
 
+## Disclaimer
+
+Currently, nsolid-manager only supports running one app at a time.  We're working on this.
+
 ## Bug reports and feature requests
 
 Please feel free to submit an issue on the nsolid-manager [GitHub page](https://github.com/seanohollaren/nsolid-manager) if you come across any issues.
