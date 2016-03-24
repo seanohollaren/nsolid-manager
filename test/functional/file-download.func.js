@@ -4,6 +4,7 @@ const FileDownloader = require('../../lib/file-downloader');
 const path = require('path');
 const fs = require('fs');
 const expect = require('chai').expect;
+const testDownloadDirectory = path.resolve(__dirname, '../ignore');
 
 /*
 This currently taking a bit long to run.
@@ -14,9 +15,20 @@ We should have smaller test files we can use.
 
 describe('FileDownloader Works', function () {
 
+  before(function (done) {
+
+    // Make sure test download directory exists (and create it if it doesn't)
+    if (!fs.existsSync(testDownloadDirectory)) {
+      fs.mkdirSync(testDownloadDirectory);
+    }
+
+    done();
+
+  });
+
   it('Should Work Without A Checksum', function (done) {
     this.timeout(60000);
-    const location = path.resolve(__dirname, '../ignore/nsolid-proxy-v3.4.2.tar.gz');
+    const location = path.resolve(testDownloadDirectory, 'nsolid-proxy-v3.4.2.tar.gz');
 
 
     /*
@@ -40,7 +52,7 @@ describe('FileDownloader Works', function () {
 
   it('Should Work With A Checksum', function (done) {
     this.timeout(60000);
-    const location = path.resolve(__dirname, '../ignore/nsolid-proxy-v3.4.2.tar.gz');
+    const location = path.resolve(testDownloadDirectory, 'nsolid-proxy-v3.4.2.tar.gz');
 
 
     /*
