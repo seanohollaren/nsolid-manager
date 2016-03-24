@@ -1,6 +1,6 @@
 {
   "name": "nsolid-manager",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A manager to wrangle all the different moving parts of nsolid.",
   "main": "index.js",
   "scripts": {
