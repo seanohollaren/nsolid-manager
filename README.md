@@ -1,8 +1,5 @@
 # N|Solid Manager
 
-#### A manager that sets up and runs N|Solid for you
-
-
 ## Installation
 
 ```bash
