@@ -24,7 +24,11 @@
     "registry",
     "proxy"
   ],
-  "author": "Sean O'Hollaren",
+  "author": "Sean O'Hollaren <sean.ohollaren@gmail.com>",
+  "contributors": [{
+    "name": "Alexander Wolden",
+    "email": "awolden@gmail.com"
+    }],
   "license": "ISC",
   "dependencies": {
     "chalk": "^1.1.1",
