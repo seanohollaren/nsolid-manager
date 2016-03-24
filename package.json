@@ -1,12 +1,12 @@
 {
   "name": "nsolid-manager",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A manager to wrangle all the different moving parts of nsolid.",
   "main": "index.js",
   "scripts": {
     "start": "node index",
     "install": "node install.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha $(find test -name '*.js')",
     "test-functional": "node_modules/mocha/bin/mocha -R spec test/functional",
     "eslint": "node_modules/eslint/bin/eslint.js ./src || exit 0",
     "build": "node_modules/babel-cli/bin/babel.js src -d ./ --presets es2015"
@@ -24,7 +24,11 @@
     "registry",
     "proxy"
   ],
-  "author": "Sean O'Hollaren",
+  "author": "Sean O'Hollaren <sean.ohollaren@gmail.com>",
+  "contributors": [{
+    "name": "Alexander Wolden",
+    "email": "awolden@gmail.com"
+    }],
   "license": "ISC",
   "dependencies": {
     "chalk": "^1.1.1",
