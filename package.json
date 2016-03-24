@@ -1,8 +1,12 @@
 {
   "name": "nsolid-manager",
-  "version": "1.0.0",
-  "description": "A manager to wrangle all the different moving parts of nsolid.",
+  "version": "1.0.1",
+  "description": "A manager that sets up and runs N|Solid for you",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seanohollaren/nsolid-manager.git"
+  },
   "scripts": {
     "start": "node index",
     "install": "node install.js",
@@ -16,6 +20,7 @@
     "nsm": "./bin/nsolid-manager.js"
   },
   "keywords": [
+    "n|solid",
     "nsolid",
     "manager",
     "etcd",
@@ -28,7 +33,7 @@
   "contributors": [{
     "name": "Alexander Wolden",
     "email": "awolden@gmail.com"
-    }],
+  }],
   "license": "ISC",
   "dependencies": {
     "chalk": "^1.1.1",
