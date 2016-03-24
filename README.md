@@ -2,36 +2,18 @@
 
 #### A manager that sets up and runs N|Solid for you
 
-Automatically download and set up all prerequisites required for an N|Solid server and execute a target app using the `nsolid` executable.
 
-It'll handle:
-- Downloading N|Solid and all required dependencies for your platform
-- Starting all necessary services
-- Exporting relevant environment variables
-- Starting the target app with the `nsolid` executable
-
-With one command, you'll be ready to navigate to the N|Solid Console and watch how your app is doing.
-
-## Set up
+## Installation
 
 Install the manager globally with:
 
-```
+```bash
 npm install -g nsolid-manager
 ```
 
-It will automatically download and set up:
+## Usage
 
-- N|Solid Runtime
-- N|Solid Hub/Proxy
-- N|Solid Console
-- etcd
-
-## Running an app
-
-Once you've installed `nsolid-manager`, run an app like this:
-
-```
+```bash
 nsm app.js
 ```
 
@@ -39,9 +21,21 @@ This will spin up N|Solid's dependencies and start an N|Solid Console server on 
 
 You can also specify a custom name for your application (reflected in the Console) with the --name flag:
 
-```
+```bash
 nsm app.js --name myApp
 ```
+
+## Features
+
+Automatically download and set up all prerequisites required for an N|Solid server and execute a target app using the `nsolid` executable.
+
+It'll handle:
+- Downloading N|Solid and all required dependencies (N|Solid Runtime, N|Solid Hub/Proxy, N|Solid Console, etcd) for your platform
+- Starting all necessary services
+- Exporting relevant environment variables
+- Starting the target app with the `nsolid` executable
+
+With one command, you'll be ready to navigate to the N|Solid Console and watch how your app is doing.
 
 ## Parameters
 
