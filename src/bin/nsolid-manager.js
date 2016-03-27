@@ -22,7 +22,7 @@ const etcd = path.resolve(__dirname, '../dependencies/etcd/etcd');
 
 // Define strings to start up child processes
 const etcdExec = etcd;
-const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new', '-data-dir', '../dependencies/etcd/'];
+const etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new', '-data-dir', path.resolve(__dirname, '../dependencies/etcd/')];
 
 // TODO: Allow the location of the proxy files to be specified?
 const proxyExec = nsolidBinary;

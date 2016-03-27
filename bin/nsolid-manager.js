@@ -23,7 +23,7 @@ var etcd = path.resolve(__dirname, '../dependencies/etcd/etcd');
 
 // Define strings to start up child processes
 var etcdExec = etcd;
-var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new', '-data-dir', '../dependencies/etcd/'];
+var etcdArgs = ['-name', 'nsolid_proxy', '-listen-client-urls', 'http://0.0.0.0:4001', '-advertise-client-urls', 'http://0.0.0.0:4001', '-initial-cluster-state', 'new', '-data-dir', path.resolve(__dirname, '../dependencies/etcd/')];
 
 // TODO: Allow the location of the proxy files to be specified?
 var proxyExec = nsolidBinary;
