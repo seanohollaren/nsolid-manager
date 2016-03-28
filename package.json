@@ -1,6 +1,6 @@
 {
   "name": "nsolid-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A manager that sets up and runs N|Solid for you",
   "main": "index.js",
   "repository": {
