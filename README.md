@@ -1,6 +1,6 @@
 # N|Solid Manager
 
-##### Automatically download and start up everything required to run N|Solid
+#### Automatically download and start up everything required to run N|Solid
 
 ## Installation
 
