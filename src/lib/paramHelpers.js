@@ -6,9 +6,6 @@ const _ = require('lodash');
 // Perform any required param validation
 function validateParams(paramsObj) {
 
-  console.log('\nValidating params object');
-  console.dir(paramsObj);
-
   // TODO (Sean): Look for missing or malformed args and bail early with an informative error message
   // If they specifically requested help or failed to provide any arguments
   if (paramsObj.helpRequested || !(paramsObj.appName || paramsObj.appPath)) {
