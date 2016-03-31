@@ -1,5 +1,7 @@
 # N|Solid Manager
 
+##### Automatically download and execute N|Solid
+
 ## Installation
 
 ```bash
