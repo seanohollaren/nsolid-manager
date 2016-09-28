@@ -1,3 +1,5 @@
+> **Note: This has been broken with the newest version of N|Solid.  The good news is it's now easier to set up than it used to be.**
+
 # N|Solid Manager
 
 #### Automatically download and start up everything required to run N|Solid
