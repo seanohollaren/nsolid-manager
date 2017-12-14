@@ -1,4 +1,4 @@
-> **Note: This has been broken with the newest version of N|Solid.  The good news is it's now easier to set up than it used to be.**
+> **Note: This has been broken with the newest versions of N|Solid.  The good news is it's now much easier to set up than it used to be, so NSM is no longer needed.**
 
 # N|Solid Manager
 
